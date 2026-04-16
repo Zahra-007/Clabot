@@ -56,9 +56,9 @@ export default function Home() {
 
   // Load from localStorage on mount
   useEffect(() => {
-    const savedChats = localStorage.getItem('clabot_chats')
-    const savedActiveId = localStorage.getItem('clabot_active_chat_id')
-    
+    const savedChats = sessionStorage.getItem('clabot_chats')
+    const savedActiveId = sessionStorage.getItem('clabot_active_chat_id')
+
     if (savedChats) {
       try {
         const parsed = JSON.parse(savedChats)
@@ -69,7 +69,7 @@ export default function Home() {
         console.error('Failed to parse chats from localStorage', e)
       }
     }
-    
+
     if (savedActiveId) {
       setActiveChatId(savedActiveId)
     }
@@ -79,11 +79,11 @@ export default function Home() {
   // Save to localStorage on changes
   useEffect(() => {
     if (isLoaded) {
-      localStorage.setItem('clabot_chats', JSON.stringify(chats))
+      sessionStorage.setItem('clabot_chats', JSON.stringify(chats))
       if (activeChatId) {
-        localStorage.setItem('clabot_active_chat_id', activeChatId)
+        sessionStorage.setItem('clabot_active_chat_id', activeChatId)
       } else {
-        localStorage.removeItem('clabot_active_chat_id')
+        sessionStorage.removeItem('clabot_active_chat_id')
       }
     }
   }, [chats, activeChatId, isLoaded])
