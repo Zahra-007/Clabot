@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useRef, useEffect, useCallback } from 'react'
-import { Send, Mic, Image, FileText, X, Square, Plus } from 'lucide-react'
+import { ArrowUp, Mic, Image, FileText, X, Square, Plus } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
@@ -163,41 +163,6 @@ export function ChatInput({ onSendMessage, isLoading }: ChatInputProps) {
   return (
     <div className="w-full max-w-[680px] mx-auto px-4 pb-5">
 
-      {/* Image / file previews */}
-      <AnimatePresence>
-        {(imagePreview || selectedFile) && (
-          <motion.div
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 6 }}
-            className="mb-2 flex gap-2"
-          >
-            {imagePreview && (
-              <div className="relative w-16 h-16 rounded-xl overflow-hidden border group"
-                style={{ borderColor: 'var(--color-border)' }}>
-                <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
-                <button
-                  onClick={() => { setSelectedImage(null); setImagePreview(null) }}
-                  className="absolute top-1 right-1 p-0.5 bg-black/50 text-white rounded-full"
-                >
-                  <X size={10} />
-                </button>
-              </div>
-            )}
-            {selectedFile && (
-              <div className="flex items-center gap-2 px-3 py-2 rounded-xl border text-[12px]"
-                style={{ borderColor: 'var(--color-border)', background: 'var(--color-bg-surface)', color: 'var(--color-text-primary)' }}>
-                <FileText size={14} style={{ color: 'var(--color-brand)' }} />
-                <span className="truncate max-w-[120px]">{selectedFile.name}</span>
-                <button onClick={() => setSelectedFile(null)}>
-                  <X size={12} style={{ color: 'var(--color-text-muted)' }} />
-                </button>
-              </div>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Recording indicator */}
       <AnimatePresence>
         {isRecording && (
@@ -215,139 +180,139 @@ export function ChatInput({ onSendMessage, isLoading }: ChatInputProps) {
         )}
       </AnimatePresence>
 
-      {/* Input box */}
+      {/* Input Box (Pill) */}
       <div
         className={cn(
-          'relative w-full rounded-2xl border transition-all duration-200 focus-within:ring-2 focus-within:ring-[var(--color-brand)]/50 backdrop-blur-md',
+          'relative w-full rounded-[28px] border transition-all duration-200 focus-within:ring-2 focus-within:ring-[var(--color-brand)]/50 backdrop-blur-md flex flex-col',
           isRecording ? 'border-red-200' : 'border-transparent'
         )}
         style={{
           background: 'rgba(255, 255, 255, 0.75)',
-          boxShadow: '0 1px 8px rgba(0,0,0,0.07), 0 0 0 1px rgba(0,0,0,0.05)',
+          boxShadow: '0 1px 8px rgba(0,0,0,0.07)',
         }}
       >
-        <div className="px-4 pt-3 pb-1">
+        {/* Previews (INSIDE the pill border) */}
+        <AnimatePresence>
+          {(imagePreview || selectedFile) && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              style={{ overflow: 'hidden' }}
+            >
+              <div className="flex gap-2 px-5 pt-4 pb-1">
+                {imagePreview && (
+                  <div className="relative w-[72px] h-[72px] rounded-xl overflow-hidden border bg-black/5 border-[var(--color-border)] group">
+                    <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                    <button
+                      onClick={() => { setSelectedImage(null); setImagePreview(null) }}
+                      className="absolute top-1 right-1 p-1 bg-black/70 hover:bg-black/90 text-white rounded-full transition"
+                    >
+                      <X size={12} strokeWidth={3} />
+                    </button>
+                  </div>
+                )}
+                {selectedFile && (
+                  <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl border text-[13px] h-fit bg-[var(--color-bg-surface)] text-[var(--color-text-primary)] border-[var(--color-border)]">
+                    <FileText size={16} className="text-[var(--color-brand)]" />
+                    <span className="truncate max-w-[140px] font-medium">{selectedFile.name}</span>
+                    <button onClick={() => setSelectedFile(null)} className="opacity-50 hover:opacity-100 transition ml-1">
+                      <X size={14} />
+                    </button>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Input Row */}
+        <div className="flex items-end gap-2 px-1.5 py-1.5">
+          {/* Attach Button + Menu */}
+          <div className="relative shrink-0 pb-1.5 pl-1.5">
+            <AnimatePresence>
+              {showAttachMenu && (
+                <motion.div
+                  ref={attachMenuRef}
+                  initial={{ opacity: 0, y: 6, scale: 0.97 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 6, scale: 0.97 }}
+                  transition={{ duration: 0.12 }}
+                  className="absolute bottom-full left-0 mb-3 w-48 rounded-2xl border shadow-xl overflow-hidden z-[100] bg-[var(--color-bg-surface)]"
+                  style={{ borderColor: 'var(--color-border)' }}
+                >
+                  <label
+                    htmlFor="clabot-img-input"
+                    onClick={() => setShowAttachMenu(false)}
+                    className="flex items-center gap-3 w-full px-4 py-3 text-[14px] transition-colors text-left cursor-pointer hover:bg-black/5 text-[var(--color-text-primary)] font-medium"
+                  >
+                    <Image size={16} className="text-[var(--color-text-secondary)] opacity-80" />
+                    Upload image
+                  </label>
+                  <div className="mx-4 border-t border-[var(--color-border)]" />
+                  <label
+                    htmlFor="clabot-doc-input"
+                    onClick={() => setShowAttachMenu(false)}
+                    className="flex items-center gap-3 w-full px-4 py-3 text-[14px] transition-colors text-left cursor-pointer hover:bg-black/5 text-[var(--color-text-primary)] font-medium"
+                  >
+                    <FileText size={16} className="text-[var(--color-text-secondary)] opacity-80" />
+                    Attach document
+                  </label>
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <button
+              ref={plusBtnRef}
+              onClick={() => setShowAttachMenu(v => !v)}
+              className="w-10 h-10 flex items-center justify-center rounded-full transition hover:bg-black/5 active:scale-95 text-[var(--color-text-primary)] opacity-70 hover:opacity-100"
+              title="Attach"
+            >
+              <Plus size={22} strokeWidth={2} />
+            </button>
+            <input id="clabot-img-input" type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
+            <input id="clabot-doc-input" type="file" accept=".pdf,.doc,.docx,.txt,.csv,.json,.md,.py,.js,.ts,.tsx,.jsx,.html,.css,.xml,.yaml,.yml,.log" onChange={handleFileChange} className="hidden" />
+          </div>
+
+          {/* Textarea */}
           <textarea
             ref={textareaRef}
             value={displayValue}
             onChange={e => !isRecording && setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             onPaste={handlePaste}
-            placeholder="Message Clabot..."
+            placeholder="Ask anything..."
             rows={1}
             readOnly={isRecording}
-            className="w-full resize-none border-none outline-none bg-transparent text-[14px] leading-relaxed"
-            style={{
-              color: 'var(--color-text-primary)',
-              fontFamily: 'var(--font-sans)',
-              minHeight: '24px',
-              maxHeight: '200px',
-            }}
+            className="flex-1 resize-none border-none outline-none bg-transparent text-[16px] tracking-tight leading-relaxed py-3 min-h-[46px] max-h-[240px] text-[var(--color-text-primary)] font-sans placeholder-[var(--color-text-secondary)] placeholder-opacity-70"
           />
-        </div>
 
-        <div className="flex items-center justify-between px-3 pb-2.5">
-
-          {/* Attach button + inline popup (no portal) */}
-          <div className="relative">
-            {/* The popup menu — positioned upward, no portal needed */}
-            <AnimatePresence>
-              {showAttachMenu && (
-                <motion.div
-                  ref={attachMenuRef}
-                  key="attach-menu"
-                  initial={{ opacity: 0, y: 6, scale: 0.97 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 6, scale: 0.97 }}
-                  transition={{ duration: 0.12 }}
-                  className="absolute bottom-full left-0 mb-2 w-48 rounded-2xl border shadow-xl overflow-hidden"
-                  style={{
-                    background: 'var(--color-bg-surface)',
-                    borderColor: 'var(--color-border)',
-                    zIndex: 100,
-                  }}
-                >
-                  {/* Label links directly to input — 100% reliable, no programmatic click needed */}
-                  <label
-                    htmlFor="clabot-img-input"
-                    onClick={() => setShowAttachMenu(false)}
-                    className="flex items-center gap-3 w-full px-4 py-3 text-[13px] transition-colors text-left cursor-pointer hover:bg-black/5"
-                    style={{ color: 'var(--color-text-primary)' }}
-                  >
-                    <Image size={15} style={{ color: 'var(--color-text-secondary)' }} />
-                    Attach image
-                  </label>
-                  <div className="mx-4 border-t" style={{ borderColor: 'var(--color-border)' }} />
-                  <label
-                    htmlFor="clabot-doc-input"
-                    onClick={() => setShowAttachMenu(false)}
-                    className="flex items-center gap-3 w-full px-4 py-3 text-[13px] transition-colors text-left cursor-pointer hover:bg-black/5"
-                    style={{ color: 'var(--color-text-primary)' }}
-                  >
-                    <FileText size={15} style={{ color: 'var(--color-text-secondary)' }} />
-                    Attach file
-                  </label>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* + Button */}
-            <button
-              ref={plusBtnRef}
-              onClick={() => setShowAttachMenu(v => !v)}
-              className="w-8 h-8 flex items-center justify-center rounded-full border transition-all duration-150 hover:bg-black/5 hover:scale-105 active:scale-95"
-              style={{ borderColor: 'var(--color-border)', color: 'var(--color-text-secondary)' }}
-              title="Attach"
-            >
-              <Plus size={16} />
-            </button>
-
-            {/* File inputs — in the SAME component tree as the labels, so htmlFor always works */}
-            <input
-              id="clabot-img-input"
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              style={{ position: 'fixed', top: '-9999px', left: '-9999px', opacity: 0, width: 1, height: 1 }}
-              tabIndex={-1}
-            />
-            <input
-              id="clabot-doc-input"
-              type="file"
-              accept=".pdf,.doc,.docx,.txt,.csv,.json,.md,.py,.js,.ts,.tsx,.jsx,.html,.css,.xml,.yaml,.yml,.log"
-              onChange={handleFileChange}
-              style={{ position: 'fixed', top: '-9999px', left: '-9999px', opacity: 0, width: 1, height: 1 }}
-              tabIndex={-1}
-            />
-          </div>
-          {/* Mic + Send */}
-          <div className="flex items-center gap-1.5">
+          {/* Right Controls */}
+          <div className="flex items-center gap-1 shrink-0 pb-1.5 pr-1.5">
             {speechSupported && (
               <button
                 onClick={() => isRecording ? stopRecording() : startRecording()}
                 title={isRecording ? 'Stop recording' : 'Voice input'}
                 className={cn(
-                  'w-8 h-8 flex items-center justify-center rounded-full transition-all duration-150 hover:scale-105 active:scale-95',
-                  isRecording ? 'bg-red-100 text-red-500 shadow-[0_0_10px_rgba(239,68,68,0.3)] animate-pulse' : 'hover:bg-black/5'
+                  'w-10 h-10 flex items-center justify-center rounded-full transition-all duration-150 active:scale-95',
+                  isRecording ? 'bg-red-100 text-red-500 shadow-[0_0_12px_rgba(239,68,68,0.3)] animate-pulse' : 'text-[var(--color-text-primary)] opacity-60 hover:opacity-100 hover:bg-black/5'
                 )}
-                style={!isRecording ? { color: 'var(--color-text-muted)' } : {}}
               >
-                {isRecording ? <Square size={14} fill="currentColor" /> : <Mic size={16} />}
+                {isRecording ? <Square size={16} fill="currentColor" /> : <Mic size={20} strokeWidth={2} />}
               </button>
             )}
 
             <button
               onClick={handleSend}
               disabled={!hasContent || isLoading || isRecording}
-              className="w-8 h-8 flex items-center justify-center rounded-full transition-all duration-150 hover:scale-105 active:scale-95"
+              className="w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200 active:scale-95 shadow-sm"
               style={{
-                background: hasContent && !isLoading && !isRecording ? 'var(--color-brand)' : 'var(--color-border)',
-                color: hasContent && !isLoading && !isRecording ? 'white' : 'var(--color-text-muted)',
+                background: hasContent && !isLoading && !isRecording ? '#000000' : '#E5E7EB',
+                color: hasContent && !isLoading && !isRecording ? '#ffffff' : '#A1A1AA',
                 cursor: hasContent && !isLoading && !isRecording ? 'pointer' : 'default',
-                opacity: hasContent && !isLoading && !isRecording ? 1 : 0.4,
+                transform: hasContent && !isLoading && !isRecording ? 'scale(1)' : 'scale(0.96)',
               }}
             >
-              <Send size={14} strokeWidth={2} />
+              <ArrowUp size={20} strokeWidth={2.5} />
             </button>
           </div>
         </div>

@@ -306,14 +306,16 @@ export default function Home() {
       isMobileMenuOpen={isMobileMenuOpen}
       setIsMobileMenuOpen={setIsMobileMenuOpen}
     >
-      <div className="flex flex-col h-full">
-        <ChatWindow
-          messages={activeChat?.messages || []}
-          isLoading={loading}
-          chatTitle={activeChat?.title}
-          onSuggestionClick={(s) => sendMessage(s)}
-          onMenuClick={() => setIsMobileMenuOpen(true)}
-        />
+      <div className="flex flex-col h-screen">
+        <div className="flex-1 overflow-hidden">
+          <ChatWindow
+            messages={activeChat?.messages || []}
+            isLoading={loading}
+            chatTitle={activeChat?.title}
+            onSuggestionClick={(s) => sendMessage(s)}
+            onMenuClick={() => setIsMobileMenuOpen(true)}
+          />
+        </div>
         <ChatInput
           onSendMessage={sendMessage}
           isLoading={loading}

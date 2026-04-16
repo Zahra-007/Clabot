@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { createPortal } from 'react-dom'
-import { SquarePen, MessageSquare, PanelLeft, Settings, LogIn, LogOut, Trash2, X, Eye, EyeOff, Star, Pencil, MoreHorizontal } from 'lucide-react'
+import { SquarePen, MessageSquare, PanelLeft, Settings, LogIn, LogOut, Trash2, X, Eye, EyeOff, Star, Pencil, MoreHorizontal, ChevronDown } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
@@ -308,10 +308,12 @@ export function Sidebar({
         ) : (
           grouped.map(group => (
             <div key={group.label}>
-              <p className="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-widest"
-                style={{ color: 'var(--color-text-muted)' }}>
-                {group.label}
-              </p>
+              <div className="flex items-center gap-1 px-3 mb-1 mt-3">
+                <p className="text-[12px]" style={{ color: 'var(--color-text-muted)' }}>
+                  {group.label}
+                </p>
+                <ChevronDown size={12} style={{ color: 'var(--color-text-muted)' }} />
+              </div>
               <AnimatePresence mode="popLayout">
                 {group.chats.map(chat => (
                   <motion.div
@@ -332,7 +334,7 @@ export function Sidebar({
                           if (renameValue.trim()) onChatRename(chat.id, renameValue.trim())
                           setRenamingId(null)
                         }}
-                        className="px-3 py-1"
+                        className="px-2 py-0.5"
                       >
                         <input
                           autoFocus
@@ -340,7 +342,7 @@ export function Sidebar({
                           onChange={e => setRenameValue(e.target.value)}
                           onBlur={() => setRenamingId(null)}
                           onKeyDown={e => e.key === 'Escape' && setRenamingId(null)}
-                          className="w-full px-2 py-1.5 rounded-lg text-[13px] outline-none border"
+                          className="w-full px-2 py-1.5 rounded-xl text-[13px] outline-none border"
                           style={{
                             borderColor: 'var(--color-brand)',
                             background: 'var(--color-bg-surface)',
@@ -349,27 +351,31 @@ export function Sidebar({
                         />
                       </form>
                     ) : (
-                      <button
-                        onClick={() => onChatSelect(chat.id)}
-                        className="w-full flex items-center px-3 py-2 pr-8 rounded-xl transition-all duration-150 text-left"
-                        style={{
-                          background: hoveredChat === chat.id || menuOpenFor === chat.id ? 'rgba(0,0,0,0.06)' : 'transparent',
-                          borderRadius: 10,
-                          opacity: activeChatId === chat.id ? 1 : 0.80,
-                          color: 'var(--color-text-primary)',
-                        }}
-                      >
-                        <span className="text-[13px] truncate" style={{ fontWeight: activeChatId === chat.id ? 600 : 400 }}>
-                          {starredIds.has(chat.id) ? '⭐ ' : ''}{chat.title}
-                        </span>
-                      </button>
+                      <div className="px-2 py-0.5">
+                        <button
+                          onClick={() => onChatSelect(chat.id)}
+                          className="w-full flex items-center px-3 py-2 pr-8 transition-all duration-150 text-left"
+                          style={{
+                            background: activeChatId === chat.id ? 'rgba(0, 0, 0, 0.08)' : (hoveredChat === chat.id || menuOpenFor === chat.id ? 'rgba(0,0,0,0.04)' : 'transparent'),
+                            borderRadius: '12px',
+                            color: 'var(--color-text-primary)',
+                          }}
+                        >
+                          <span className="text-[13px] truncate leading-tight">
+                            {starredIds.has(chat.id) ? '⭐ ' : ''}{chat.title}
+                          </span>
+                        </button>
+                      </div>
                     )}
 
                     {/* ··· menu trigger */}
                     {(hoveredChat === chat.id || menuOpenFor === chat.id) && renamingId !== chat.id && (
                       <button
-                        onMouseDown={e => openMenu(e, chat.id)}
-                        className="absolute right-1 top-1/2 -translate-y-1/2 p-1.5 rounded-lg hover:bg-black/10 transition-colors"
+                        onMouseDown={e => {
+                          e.stopPropagation()
+                          openMenu(e, chat.id)
+                        }}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 p-1.5 rounded-lg hover:bg-black/10 transition-colors"
                         style={{ color: 'var(--color-text-muted)' }}
                         title="More options"
                       >

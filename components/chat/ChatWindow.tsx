@@ -66,16 +66,32 @@ function groupMessagesByDate(messages: Message[]): MessageGroup[] {
 }
 
 export function ChatWindow({ messages, isLoading }: ChatWindowProps) {
+  const scrollRef = useRef<HTMLDivElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    const el = scrollRef.current
+    if (!el) return
+
+    const observer = new ResizeObserver(() => {
+      el.scrollTop = el.scrollHeight
+    })
+    
+    const contentWrapper = messagesEndRef.current?.parentElement
+    if (contentWrapper) {
+      observer.observe(contentWrapper)
+    }
+    
+    // Initial scroll
+    el.scrollTop = el.scrollHeight
+    
+    return () => observer.disconnect()
   }, [messages, isLoading])
 
   const groups = groupMessagesByDate(messages)
 
   return (
-    <div className="flex-1 overflow-y-auto chat-scrollbar">
+    <div ref={scrollRef} className="h-full overflow-y-auto chat-scrollbar">
       <div className="w-full">
 
         {messages.length === 0 ? (
@@ -122,26 +138,37 @@ export function ChatWindow({ messages, isLoading }: ChatWindowProps) {
                   <div className="flex-1 border-t" style={{ borderColor: 'var(--color-border)' }} />
                 </div>
 
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col">
                   <AnimatePresence>
-                    {group.messages.map(msg => (
-                      <MessageBubble
-                        key={msg.idx}
-                        role={msg.role}
-                        content={msg.content}
-                        timestamp={msg.timestamp}
-                        isLoading={isLoading && msg.idx === messages.length - 1}
-                        formatTime={formatTime}
-                        imagePreview={msg.imagePreview}
-                        fileName={msg.fileName}
-                      />
-                    ))}
+                    {group.messages.map((msg, i) => {
+                      const prev = group.messages[i - 1]
+
+                      const isUserToAssistant =
+                        prev && prev.role === 'user' && msg.role === 'assistant'
+
+                      return (
+                        <div
+                          key={msg.idx}
+                          className={isUserToAssistant ? "mt-8" : "mt-3"}
+                        >
+                          <MessageBubble
+                            role={msg.role}
+                            content={msg.content}
+                            timestamp={msg.timestamp}
+                            isLoading={isLoading && msg.idx === messages.length - 1}
+                            formatTime={formatTime}
+                            imagePreview={msg.imagePreview}
+                            fileName={msg.fileName}
+                          />
+                        </div>
+                      )
+                    })}
                   </AnimatePresence>
                 </div>
               </div>
             ))}
 
-            <div ref={messagesEndRef} className="h-8 shrink-0" />
+            <div ref={messagesEndRef} />
           </div>
 
         )}
