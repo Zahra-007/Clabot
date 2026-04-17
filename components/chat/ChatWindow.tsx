@@ -70,23 +70,31 @@ export function ChatWindow({ messages, isLoading }: ChatWindowProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
+  const isUserScrollingRef = useRef(false)
+  const lastScrollTop = useRef(0)
+
   useEffect(() => {
     const el = scrollRef.current
     if (!el) return
 
-    const observer = new ResizeObserver(() => {
-      el.scrollTop = el.scrollHeight
-    })
-
-    const contentWrapper = messagesEndRef.current?.parentElement
-    if (contentWrapper) {
-      observer.observe(contentWrapper)
+    const handleScroll = () => {
+      const isScrollingUp = el.scrollTop < lastScrollTop.current
+      lastScrollTop.current = el.scrollTop
+      const isAtBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 60
+      if (isScrollingUp) isUserScrollingRef.current = true
+      if (isAtBottom) isUserScrollingRef.current = false
     }
 
-    // Initial scroll
-    el.scrollTop = el.scrollHeight
+    el.addEventListener('scroll', handleScroll, { passive: true })
+    return () => el.removeEventListener('scroll', handleScroll)
+  }, [])
 
-    return () => observer.disconnect()
+  useEffect(() => {
+    const el = scrollRef.current
+    if (!el) return
+    if (!isUserScrollingRef.current) {
+      el.scrollTop = el.scrollHeight
+    }
   }, [messages, isLoading])
 
   const groups = groupMessagesByDate(messages)

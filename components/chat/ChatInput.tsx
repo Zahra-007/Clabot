@@ -161,7 +161,7 @@ export function ChatInput({ onSendMessage, onStop, isLoading }: ChatInputProps) 
   const hasContent = !!(input.trim() || selectedImage || selectedFile)
 
   return (
-    <div className="w-full max-w-[680px] mx-auto px-4 pb-5">
+    <div className="w-full max-w-[680px] mx-auto px-3 pb-3 md:px-4 md:pb-5">
 
       {/* Recording indicator */}
       <AnimatePresence>
@@ -187,8 +187,8 @@ export function ChatInput({ onSendMessage, onStop, isLoading }: ChatInputProps) 
           isRecording ? 'border-red-200' : 'border-transparent'
         )}
         style={{
-          background: 'rgba(255, 255, 255, 0.75)',
-          boxShadow: '0 1px 8px rgba(0,0,0,0.07)',
+          background: 'var(--color-bg-surface)',
+          boxShadow: 'var(--input-shadow)',
         }}
       >
         {/* Previews (INSIDE the pill border) */}
@@ -227,9 +227,9 @@ export function ChatInput({ onSendMessage, onStop, isLoading }: ChatInputProps) 
         </AnimatePresence>
 
         {/* Input Row */}
-        <div className="flex items-end gap-2 px-1.5 py-1.5">
+        <div className="flex items-end gap-1 px-1 py-1 md:gap-2 md:px-1.5 md:py-1.5">
           {/* Attach Button + Menu */}
-          <div className="relative shrink-0 pb-1.5 pl-1.5">
+          <div className="relative shrink-0 pb-1 pl-1 md:pb-1.5 md:pl-1.5">
             <AnimatePresence>
               {showAttachMenu && (
                 <motion.div
@@ -266,10 +266,11 @@ export function ChatInput({ onSendMessage, onStop, isLoading }: ChatInputProps) 
             <button
               ref={plusBtnRef}
               onClick={() => setShowAttachMenu(v => !v)}
-              className="w-10 h-10 flex items-center justify-center rounded-full transition hover:bg-black/5 active:scale-95 text-[var(--color-text-primary)] opacity-70 hover:opacity-100"
+              className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full transition hover:bg-black/5 active:scale-95 text-[var(--color-text-primary)] opacity-70 hover:opacity-100"
               title="Attach"
             >
-              <Plus size={22} strokeWidth={2} />
+              <Plus size={20} strokeWidth={2} className="md:hidden" />
+              <Plus size={22} strokeWidth={2} className="hidden md:block" />
             </button>
             <input id="clabot-img-input" type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
             <input id="clabot-doc-input" type="file" accept=".pdf,.doc,.docx,.txt,.csv,.json,.md,.py,.js,.ts,.tsx,.jsx,.html,.css,.xml,.yaml,.yml,.log" onChange={handleFileChange} className="hidden" />
@@ -285,28 +286,28 @@ export function ChatInput({ onSendMessage, onStop, isLoading }: ChatInputProps) 
             placeholder="Ask anything..."
             rows={1}
             readOnly={isRecording}
-            className="flex-1 resize-none border-none outline-none bg-transparent text-[16px] tracking-tight leading-relaxed py-3 min-h-[46px] max-h-[240px] text-[var(--color-text-primary)] font-sans placeholder-[var(--color-text-secondary)] placeholder-opacity-70"
+            className="flex-1 resize-none border-none outline-none bg-transparent text-[15px] md:text-[16px] tracking-tight leading-relaxed py-2 md:py-3 min-h-[38px] md:min-h-[46px] max-h-[200px] md:max-h-[240px] text-[var(--color-text-primary)] font-sans placeholder-[var(--color-text-secondary)] placeholder-opacity-70"
           />
 
           {/* Right Controls */}
-          <div className="flex items-center gap-1 shrink-0 pb-1.5 pr-1.5">
+          <div className="flex items-center gap-0.5 shrink-0 pb-1 pr-1 md:gap-1 md:pb-1.5 md:pr-1.5">
             {speechSupported && (
               <button
                 onClick={() => isRecording ? stopRecording() : startRecording()}
                 title={isRecording ? 'Stop recording' : 'Voice input'}
                 className={cn(
-                  'w-10 h-10 flex items-center justify-center rounded-full transition-all duration-150 active:scale-95',
+                  'w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-all duration-150 active:scale-95',
                   isRecording ? 'bg-red-100 text-red-500 shadow-[0_0_12px_rgba(239,68,68,0.3)] animate-pulse' : 'text-[var(--color-text-primary)] opacity-60 hover:opacity-100 hover:bg-black/5'
                 )}
               >
-                {isRecording ? <Square size={16} fill="currentColor" /> : <Mic size={20} strokeWidth={2} />}
+                {isRecording ? <Square size={14} fill="currentColor" /> : <Mic size={18} strokeWidth={2} />}
               </button>
             )}
 
             {isLoading ? (
               <button
                 onClick={onStop}
-                className="w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200 active:scale-95 border border-gray-300 bg-white"
+                className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-all duration-200 active:scale-95 border border-gray-300 bg-white"
               >
                 <span className="w-3.5 h-3.5 rounded-sm bg-black" />
               </button>
@@ -314,7 +315,7 @@ export function ChatInput({ onSendMessage, onStop, isLoading }: ChatInputProps) 
               <button
                 onClick={handleSend}
                 disabled={!hasContent || isRecording}
-                className="w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200 active:scale-95 shadow-sm"
+                className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-all duration-200 active:scale-95 shadow-sm"
                 style={{
                   background: hasContent && !isRecording ? '#6A6EF3' : '#ffffff',
                   color: hasContent && !isRecording ? '#ffffff' : '#A1A1AA',

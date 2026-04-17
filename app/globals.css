@@ -39,23 +39,76 @@
 }
 
 @layer utilities {
-  .scrollbar-hide::-webkit-scrollbar { display: none; }
-  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 
   /* Thin visible scrollbar for the chat area */
-  .chat-scrollbar { scrollbar-width: thin; scrollbar-color: rgba(0,0,0,0.18) transparent; }
-  .chat-scrollbar::-webkit-scrollbar { width: 5px; }
-  .chat-scrollbar::-webkit-scrollbar-track { background: transparent; }
-  .chat-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.18); border-radius: 99px; }
-  .chat-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.30); }
+  .chat-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+  }
+
+  .chat-scrollbar::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  .chat-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .chat-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(128, 128, 128, 0.35);
+    border-radius: 99px;
+  }
+
+  .chat-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(128, 128, 128, 0.55);
+  }
 
   /* Recording pulse ring */
   @keyframes record-pulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.35); }
-    50%       { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.35);
+    }
+
+    50% {
+      box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+    }
   }
 
   .recording-pulse {
     animation: record-pulse 1.4s ease-in-out infinite;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-brand: #818cf8;
+    --color-brand-accent: #a5b4fc;
+
+    --color-bg-base: #212121;
+    --color-bg-surface: #2f2f2f;
+    --color-bg-sidebar: #171717;
+
+    --color-text-primary: #ececec;
+    --color-text-secondary: #8e8ea0;
+    --color-text-muted: #555560;
+
+    --color-border: #383838;
+    --color-border-subtle: #2a2a2a;
+
+    --input-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+  }
+
+  body {
+    background: #212121;
   }
 }

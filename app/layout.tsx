@@ -31,9 +31,8 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col" style={{ background: 'var(--color-bg-base)', color: 'var(--color-text-primary)' }}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="light"
-          forcedTheme="light"
-          enableSystem={false}
+          defaultTheme="system"
+          enableSystem={true}
           disableTransitionOnChange
         >
           {children}

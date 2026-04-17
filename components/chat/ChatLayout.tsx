@@ -5,7 +5,6 @@ import React, { useState } from 'react'
 import { Sidebar } from './Sidebar'
 import { motion, AnimatePresence } from 'framer-motion'
 import { SquarePen, PanelLeft, Menu } from 'lucide-react'
-import { ClaIcon } from '@/components/ui/ClaIcon'
 
 function UserAvatar({ size }: { size: number }) {
   return (
@@ -86,7 +85,7 @@ export function ChatLayout({
             exit={{ x: -280 }}
             transition={{ type: 'spring', damping: 30, stiffness: 280 }}
             className="fixed top-0 left-0 h-full z-50 md:hidden overflow-hidden backdrop-blur-md bg-white/60 dark:bg-black/60 supports-[backdrop-filter]:bg-opacity-60"
-            style={{ width: 260, background: 'rgba(245, 244, 242, 0.85)' }}
+            style={{ width: 260, background: 'var(--color-bg-sidebar)' }}
           >
             <Sidebar
               chats={chats}
@@ -108,7 +107,7 @@ export function ChatLayout({
           className="h-full hidden md:flex flex-col items-center py-5 shrink-0 border-r backdrop-blur-md relative z-10"
           style={{
             width: 56,
-            background: 'rgba(245, 244, 242, 0.85)',
+            background: 'var(--color-bg-sidebar)',
             borderColor: 'var(--color-border)',
             gap: 2,
           }}
@@ -171,7 +170,7 @@ export function ChatLayout({
             exit={{ width: 0, opacity: 0 }}
             transition={{ type: 'spring', damping: 28, stiffness: 240 }}
             className="h-full shrink-0 overflow-hidden border-r hidden md:block backdrop-blur-md relative z-10"
-            style={{ background: 'rgba(245, 244, 242, 0.85)', borderColor: 'var(--color-border)' }}
+            style={{ background: 'var(--color-bg-sidebar)', borderColor: 'var(--color-border)' }}
           >
             <motion.div
               initial={{ x: -20, opacity: 0 }}
@@ -201,7 +200,7 @@ export function ChatLayout({
         {/* Mobile-only top bar */}
         <div
           className="flex md:hidden items-center justify-between px-4 py-3 border-b shrink-0 backdrop-blur-md z-10"
-          style={{ borderColor: 'var(--color-border)', background: 'rgba(245, 244, 242, 0.85)' }}
+          style={{ borderColor: 'var(--color-border)', background: 'var(--color-bg-sidebar)' }}
         >
           <button
             onClick={() => setIsMobileMenuOpen(true)}
@@ -212,12 +211,12 @@ export function ChatLayout({
             <Menu size={20} />
           </button>
 
-          <div className="flex items-center gap-2">
-            <ClaIcon size={22} />
-            <span className="text-[15px] font-bold tracking-tight" style={{ color: 'var(--color-text-primary)', fontFamily: 'var(--font-display)' }}>
-              Clabot
-            </span>
-          </div>
+          <span
+            className="text-[18px] font-bold italic tracking-tight"
+            style={{ color: 'var(--color-text-primary)', fontFamily: 'var(--font-display)' }}
+          >
+            Clabot
+          </span>
 
           <button
             onClick={onNewChat}
