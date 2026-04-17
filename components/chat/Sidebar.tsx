@@ -284,9 +284,14 @@ export function Sidebar({
 
       {/* Brand + Collapse */}
       <div className="flex items-center justify-between px-2 mb-5">
-        <div className="flex items-center gap-2">
-          <ClaIcon size={20} />
-          <span className="text-[16px] font-bold tracking-tight" style={{ color: 'var(--color-text-primary)', fontFamily: 'var(--font-display)' }}>
+        <div className="flex items-center">
+          <span style={{
+            color: 'var(--color-text-primary)',
+            fontFamily: 'Georgia, "Times New Roman", serif',
+            fontSize: '18px',
+            fontWeight: '400',
+            letterSpacing: '-0.3px',
+          }}>
             Clabot
           </span>
         </div>
@@ -322,160 +327,160 @@ export function Sidebar({
           grouped.map(group => {
             const isCollapsed = collapsedGroups.has(group.label)
             return (
-            <div key={group.label}>
-              <button 
-                onClick={() => toggleGroup(group.label)}
-                className="flex items-center gap-1 px-3 mb-1 mt-3 w-full text-left hover:opacity-80 transition-opacity"
-              >
-                <p className="text-[12px] font-medium" style={{ color: 'var(--color-text-muted)' }}>
-                  {group.label}
-                </p>
-                {isCollapsed ? (
-                  <ChevronRight size={12} style={{ color: 'var(--color-text-muted)' }} />
-                ) : (
-                  <ChevronDown size={12} style={{ color: 'var(--color-text-muted)' }} />
-                )}
-              </button>
-              <AnimatePresence mode="popLayout" initial={false}>
-                {!isCollapsed && group.chats.map(chat => (
-                  <motion.div
-                    key={chat.id}
-                    layout
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="relative group/chat-item overflow-hidden"
-                    onMouseEnter={() => setHoveredChat(chat.id)}
-                    onMouseLeave={() => setHoveredChat(null)}
-                  >
-                    {/* Rename inline input */}
-                    {renamingId === chat.id ? (
-                      <form
-                        onSubmit={e => {
-                          e.preventDefault()
-                          if (renameValue.trim()) onChatRename(chat.id, renameValue.trim())
-                          setRenamingId(null)
-                        }}
-                        className="px-2 py-0.5"
-                      >
-                        <input
-                          autoFocus
-                          value={renameValue}
-                          onChange={e => setRenameValue(e.target.value)}
-                          onBlur={() => setRenamingId(null)}
-                          onKeyDown={e => e.key === 'Escape' && setRenamingId(null)}
-                          className="w-full px-2 py-1.5 rounded-xl text-[13px] outline-none border"
-                          style={{
-                            borderColor: 'var(--color-brand)',
-                            background: 'var(--color-bg-surface)',
-                            color: 'var(--color-text-primary)',
+              <div key={group.label}>
+                <button
+                  onClick={() => toggleGroup(group.label)}
+                  className="flex items-center gap-1 px-3 mb-1 mt-3 w-full text-left hover:opacity-80 transition-opacity"
+                >
+                  <p className="text-[12px] font-medium" style={{ color: 'var(--color-text-muted)' }}>
+                    {group.label}
+                  </p>
+                  {isCollapsed ? (
+                    <ChevronRight size={12} style={{ color: 'var(--color-text-muted)' }} />
+                  ) : (
+                    <ChevronDown size={12} style={{ color: 'var(--color-text-muted)' }} />
+                  )}
+                </button>
+                <AnimatePresence mode="popLayout" initial={false}>
+                  {!isCollapsed && group.chats.map(chat => (
+                    <motion.div
+                      key={chat.id}
+                      layout
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="relative group/chat-item overflow-hidden"
+                      onMouseEnter={() => setHoveredChat(chat.id)}
+                      onMouseLeave={() => setHoveredChat(null)}
+                    >
+                      {/* Rename inline input */}
+                      {renamingId === chat.id ? (
+                        <form
+                          onSubmit={e => {
+                            e.preventDefault()
+                            if (renameValue.trim()) onChatRename(chat.id, renameValue.trim())
+                            setRenamingId(null)
                           }}
-                        />
-                      </form>
-                    ) : (
-                      <div className="px-2 py-0.5">
-                        <button
-                          onClick={() => onChatSelect(chat.id)}
-                          className="w-full flex items-center px-3 py-2 pr-8 transition-all duration-150 text-left"
-                          style={{
-                            background: activeChatId === chat.id ? 'rgba(0, 0, 0, 0.08)' : (hoveredChat === chat.id || menuOpenFor === chat.id ? 'rgba(0,0,0,0.04)' : 'transparent'),
-                            borderRadius: '12px',
-                            color: 'var(--color-text-primary)',
-                          }}
+                          className="px-2 py-0.5"
                         >
-                          <span className="text-[13px] truncate leading-tight">
-                            {starredIds.has(chat.id) ? '⭐ ' : ''}{chat.title}
-                          </span>
+                          <input
+                            autoFocus
+                            value={renameValue}
+                            onChange={e => setRenameValue(e.target.value)}
+                            onBlur={() => setRenamingId(null)}
+                            onKeyDown={e => e.key === 'Escape' && setRenamingId(null)}
+                            className="w-full px-2 py-1.5 rounded-xl text-[13px] outline-none border"
+                            style={{
+                              borderColor: 'var(--color-brand)',
+                              background: 'var(--color-bg-surface)',
+                              color: 'var(--color-text-primary)',
+                            }}
+                          />
+                        </form>
+                      ) : (
+                        <div className="px-2 py-0.5">
+                          <button
+                            onClick={() => onChatSelect(chat.id)}
+                            className="w-full flex items-center px-3 py-2 pr-8 transition-all duration-150 text-left"
+                            style={{
+                              background: activeChatId === chat.id ? 'rgba(0, 0, 0, 0.08)' : (hoveredChat === chat.id || menuOpenFor === chat.id ? 'rgba(0,0,0,0.04)' : 'transparent'),
+                              borderRadius: '12px',
+                              color: 'var(--color-text-primary)',
+                            }}
+                          >
+                            <span className="text-[13px] truncate leading-tight">
+                              {starredIds.has(chat.id) ? '⭐ ' : ''}{chat.title}
+                            </span>
+                          </button>
+                        </div>
+                      )}
+
+                      {/* ··· menu trigger */}
+                      {(hoveredChat === chat.id || menuOpenFor === chat.id) && renamingId !== chat.id && (
+                        <button
+                          onMouseDown={e => {
+                            e.stopPropagation()
+                            openMenu(e, chat.id)
+                          }}
+                          className="absolute right-4 top-1/2 -translate-y-1/2 p-1.5 rounded-lg hover:bg-black/10 transition-colors"
+                          style={{ color: 'var(--color-text-muted)' }}
+                          title="More options"
+                        >
+                          <MoreHorizontal size={14} />
                         </button>
-                      </div>
-                    )}
+                      )}
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
 
-                    {/* ··· menu trigger */}
-                    {(hoveredChat === chat.id || menuOpenFor === chat.id) && renamingId !== chat.id && (
+                {/* Context menu portal */}
+                {typeof window !== 'undefined' && menuOpenFor && menuPos &&
+                  group.chats.some(c => c.id === menuOpenFor) &&
+                  createPortal(
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.96, y: -4 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.96 }}
+                      transition={{ duration: 0.1 }}
+                      onMouseDown={e => e.stopPropagation()}
+                      className="fixed z-[999] w-44 rounded-2xl border shadow-xl overflow-hidden py-1"
+                      style={{
+                        top: menuPos.y,
+                        left: menuPos.x,
+                        background: 'var(--color-bg-surface)',
+                        borderColor: 'var(--color-border)',
+                      }}
+                    >
+                      {/* Star */}
                       <button
-                        onMouseDown={e => {
-                          e.stopPropagation()
-                          openMenu(e, chat.id)
+                        onClick={() => {
+                          setStarredIds(prev => {
+                            const next = new Set(prev)
+                            next.has(menuOpenFor!) ? next.delete(menuOpenFor!) : next.add(menuOpenFor!)
+                            return next
+                          })
+                          setMenuOpenFor(null)
                         }}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 p-1.5 rounded-lg hover:bg-black/10 transition-colors"
-                        style={{ color: 'var(--color-text-muted)' }}
-                        title="More options"
+                        className="flex items-center gap-3 w-full px-4 py-2.5 text-[13px] hover:bg-black/5 transition-colors text-left"
+                        style={{ color: 'var(--color-text-primary)' }}
                       >
-                        <MoreHorizontal size={14} />
+                        <Star size={14} style={{ color: starredIds.has(menuOpenFor!) ? '#f59e0b' : 'var(--color-text-muted)' }}
+                          fill={starredIds.has(menuOpenFor!) ? '#f59e0b' : 'none'} />
+                        {starredIds.has(menuOpenFor!) ? 'Unstar' : 'Star'}
                       </button>
-                    )}
-                  </motion.div>
-                ))}
-              </AnimatePresence>
 
-              {/* Context menu portal */}
-              {typeof window !== 'undefined' && menuOpenFor && menuPos &&
-                group.chats.some(c => c.id === menuOpenFor) &&
-                createPortal(
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.96, y: -4 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.96 }}
-                    transition={{ duration: 0.1 }}
-                    onMouseDown={e => e.stopPropagation()}
-                    className="fixed z-[999] w-44 rounded-2xl border shadow-xl overflow-hidden py-1"
-                    style={{
-                      top: menuPos.y,
-                      left: menuPos.x,
-                      background: 'var(--color-bg-surface)',
-                      borderColor: 'var(--color-border)',
-                    }}
-                  >
-                    {/* Star */}
-                    <button
-                      onClick={() => {
-                        setStarredIds(prev => {
-                          const next = new Set(prev)
-                          next.has(menuOpenFor!) ? next.delete(menuOpenFor!) : next.add(menuOpenFor!)
-                          return next
-                        })
-                        setMenuOpenFor(null)
-                      }}
-                      className="flex items-center gap-3 w-full px-4 py-2.5 text-[13px] hover:bg-black/5 transition-colors text-left"
-                      style={{ color: 'var(--color-text-primary)' }}
-                    >
-                      <Star size={14} style={{ color: starredIds.has(menuOpenFor!) ? '#f59e0b' : 'var(--color-text-muted)' }}
-                        fill={starredIds.has(menuOpenFor!) ? '#f59e0b' : 'none'} />
-                      {starredIds.has(menuOpenFor!) ? 'Unstar' : 'Star'}
-                    </button>
+                      {/* Rename */}
+                      <button
+                        onClick={() => {
+                          const chat = chats.find(c => c.id === menuOpenFor!)
+                          setRenameValue(chat?.title || '')
+                          setRenamingId(menuOpenFor!)
+                          setMenuOpenFor(null)
+                        }}
+                        className="flex items-center gap-3 w-full px-4 py-2.5 text-[13px] hover:bg-black/5 transition-colors text-left"
+                        style={{ color: 'var(--color-text-primary)' }}
+                      >
+                        <Pencil size={14} style={{ color: 'var(--color-text-muted)' }} />
+                        Rename
+                      </button>
 
-                    {/* Rename */}
-                    <button
-                      onClick={() => {
-                        const chat = chats.find(c => c.id === menuOpenFor!)
-                        setRenameValue(chat?.title || '')
-                        setRenamingId(menuOpenFor!)
-                        setMenuOpenFor(null)
-                      }}
-                      className="flex items-center gap-3 w-full px-4 py-2.5 text-[13px] hover:bg-black/5 transition-colors text-left"
-                      style={{ color: 'var(--color-text-primary)' }}
-                    >
-                      <Pencil size={14} style={{ color: 'var(--color-text-muted)' }} />
-                      Rename
-                    </button>
+                      <div className="mx-3 my-1 border-t" style={{ borderColor: 'var(--color-border)' }} />
 
-                    <div className="mx-3 my-1 border-t" style={{ borderColor: 'var(--color-border)' }} />
-
-                    {/* Delete */}
-                    <button
-                      onClick={() => { onChatDelete(menuOpenFor!); setMenuOpenFor(null) }}
-                      className="flex items-center gap-3 w-full px-4 py-2.5 text-[13px] hover:bg-red-50 transition-colors text-left"
-                      style={{ color: '#ef4444' }}
-                    >
-                      <Trash2 size={14} />
-                      Delete
-                    </button>
-                  </motion.div>,
-                  document.body
-                )
-              }
-            </div>
+                      {/* Delete */}
+                      <button
+                        onClick={() => { onChatDelete(menuOpenFor!); setMenuOpenFor(null) }}
+                        className="flex items-center gap-3 w-full px-4 py-2.5 text-[13px] hover:bg-red-50 transition-colors text-left"
+                        style={{ color: '#ef4444' }}
+                      >
+                        <Trash2 size={14} />
+                        Delete
+                      </button>
+                    </motion.div>,
+                    document.body
+                  )
+                }
+              </div>
             )
           })
         )}

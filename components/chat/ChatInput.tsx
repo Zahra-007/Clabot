@@ -12,6 +12,7 @@ function cn(...inputs: ClassValue[]) {
 
 interface ChatInputProps {
   onSendMessage: (content: string, image?: File | null, file?: File | null) => void
+  onStop: () => void
   isLoading: boolean
 }
 
@@ -21,8 +22,7 @@ declare global {
     webkitSpeechRecognition: any
   }
 }
-
-export function ChatInput({ onSendMessage, isLoading }: ChatInputProps) {
+export function ChatInput({ onSendMessage, onStop, isLoading }: ChatInputProps) {
   const [input, setInput] = useState('')
   const [isRecording, setIsRecording] = useState(false)
   const [transcript, setTranscript] = useState('')
@@ -183,7 +183,7 @@ export function ChatInput({ onSendMessage, isLoading }: ChatInputProps) {
       {/* Input Box (Pill) */}
       <div
         className={cn(
-          'relative w-full rounded-[28px] border transition-all duration-200 focus-within:ring-2 focus-within:ring-[var(--color-brand)]/50 backdrop-blur-md flex flex-col',
+          'relative w-full rounded-[28px] border transition-all duration-200 focus-within:ring-2 focus-within:ring-black/20 focus-within:border-black/30 backdrop-blur-md flex flex-col',
           isRecording ? 'border-red-200' : 'border-transparent'
         )}
         style={{
@@ -241,22 +241,24 @@ export function ChatInput({ onSendMessage, isLoading }: ChatInputProps) {
                   className="absolute bottom-full left-0 mb-3 w-48 rounded-2xl border shadow-xl overflow-hidden z-[100] bg-[var(--color-bg-surface)]"
                   style={{ borderColor: 'var(--color-border)' }}
                 >
-                  <label
-                    htmlFor="clabot-img-input"
-                    onClick={() => setShowAttachMenu(false)}
-                    className="flex items-center gap-3 w-full px-4 py-3 text-[14px] transition-colors text-left cursor-pointer hover:bg-black/5 text-[var(--color-text-primary)] font-medium"
-                  >
-                    <Image size={16} className="text-[var(--color-text-secondary)] opacity-80" />
-                    Upload image
+                  <label htmlFor="clabot-img-input" onClick={() => setShowAttachMenu(false)} className="flex items-center gap-3 w-full px-4 py-3 cursor-pointer hover:bg-black/5 transition-colors rounded-t-2xl group">
+                    <div className="w-8 h-8 rounded-xl bg-purple-100 flex items-center justify-center group-hover:bg-purple-200 transition-colors">
+                      <Image size={15} className="text-purple-600" />
+                    </div>
+                    <div>
+                      <p className="text-[13px] font-semibold text-[var(--color-text-primary)]">Upload image</p>
+                      <p className="text-[11px] text-[var(--color-text-secondary)]">JPG, PNG, WEBP</p>
+                    </div>
                   </label>
                   <div className="mx-4 border-t border-[var(--color-border)]" />
-                  <label
-                    htmlFor="clabot-doc-input"
-                    onClick={() => setShowAttachMenu(false)}
-                    className="flex items-center gap-3 w-full px-4 py-3 text-[14px] transition-colors text-left cursor-pointer hover:bg-black/5 text-[var(--color-text-primary)] font-medium"
-                  >
-                    <FileText size={16} className="text-[var(--color-text-secondary)] opacity-80" />
-                    Attach document
+                  <label htmlFor="clabot-doc-input" onClick={() => setShowAttachMenu(false)} className="flex items-center gap-3 w-full px-4 py-3 cursor-pointer hover:bg-black/5 transition-colors rounded-b-2xl group">
+                    <div className="w-8 h-8 rounded-xl bg-blue-100 flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+                      <FileText size={15} className="text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="text-[13px] font-semibold text-[var(--color-text-primary)]">Attach document</p>
+                      <p className="text-[11px] text-[var(--color-text-secondary)]">PDF, TXT, CSV, JSON...</p>
+                    </div>
                   </label>
                 </motion.div>
               )}
@@ -301,19 +303,27 @@ export function ChatInput({ onSendMessage, isLoading }: ChatInputProps) {
               </button>
             )}
 
-            <button
-              onClick={handleSend}
-              disabled={!hasContent || isLoading || isRecording}
-              className="w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200 active:scale-95 shadow-sm"
-              style={{
-                background: hasContent && !isLoading && !isRecording ? '#000000' : '#E5E7EB',
-                color: hasContent && !isLoading && !isRecording ? '#ffffff' : '#A1A1AA',
-                cursor: hasContent && !isLoading && !isRecording ? 'pointer' : 'default',
-                transform: hasContent && !isLoading && !isRecording ? 'scale(1)' : 'scale(0.96)',
-              }}
-            >
-              <ArrowUp size={20} strokeWidth={2.5} />
-            </button>
+            {isLoading ? (
+              <button
+                onClick={onStop}
+                className="w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200 active:scale-95 border border-gray-300 bg-white"
+              >
+                <span className="w-3.5 h-3.5 rounded-sm bg-black" />
+              </button>
+            ) : (
+              <button
+                onClick={handleSend}
+                disabled={!hasContent || isRecording}
+                className="w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200 active:scale-95 shadow-sm"
+                style={{
+                  background: hasContent && !isRecording ? '#6A6EF3' : '#ffffff',
+                  color: hasContent && !isRecording ? '#ffffff' : '#A1A1AA',
+                  border: '1.5px solid #E5E7EB',
+                }}
+              >
+                <ArrowUp size={20} strokeWidth={2.5} />
+              </button>
+            )}
           </div>
         </div>
       </div>

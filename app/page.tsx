@@ -51,7 +51,29 @@ export default function Home() {
 
   const chatsRef = useRef<Chat[]>([])
   useEffect(() => { chatsRef.current = chats }, [chats])
+  const abortControllerRef = useRef<AbortController | null>(null)
 
+  const stopGeneration = () => {
+    abortControllerRef.current?.abort()
+    setLoading(false)
+  }
+  // Defining the use avatar of on sidebar 
+  function UserAvatar({ size }: { size: number }) {
+    return (
+      <div style={{
+        width: size, height: size,
+        borderRadius: '60%',
+        background: '#000000ff',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        fontSize: size * 0.5,
+        fontWeight: 600,
+        color: 'white',
+        cursor: 'pointer',
+      }}>
+        N
+      </div>
+    )
+  }
   // ✅ Load chats from localStorage, restore active chat on refresh via sessionStorage
   useEffect(() => {
     const savedChats = localStorage.getItem('clabot_chats')
@@ -112,6 +134,8 @@ export default function Home() {
   const renameChat = (id: string, newTitle: string) => {
     setChats(prev => prev.map(c => c.id === id ? { ...c, title: newTitle } : c))
   }
+
+
 
   const sendMessage = async (inputText: string, imageFile?: File | null, docFile?: File | null) => {
     const displayText = inputText.trim()
@@ -222,9 +246,13 @@ export default function Home() {
       const apiPrevious = previousMessages.map(({ role, content }) => ({ role, content }))
       const messages = alreadyAdded ? apiPrevious : [...apiPrevious, apiUserMessage]
 
+      const controller = new AbortController()
+      abortControllerRef.current = controller
+
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,  // ← move it here
         body: JSON.stringify({
           messages,
           image: base64Image,
@@ -251,25 +279,38 @@ export default function Home() {
           : c
       ))
 
+      await new Promise<void>((resolve, reject) => {
+        const timeout = setTimeout(resolve, 400)
+        controller.signal.addEventListener('abort', () => {
+          clearTimeout(timeout)
+          reject(new DOMException('Aborted', 'AbortError'))
+        })
+      })
+
       while (true) {
         const { done, value } = await streamReader.read()
         if (done) break
         const chunk = decoder.decode(value, { stream: true })
-        assistantContent += chunk
 
-        setChats(prev => prev.map(c =>
-          c.id === chatId
-            ? {
-              ...c,
-              messages: c.messages.map((m, i) =>
-                i === c.messages.length - 1 ? { ...m, content: assistantContent } : m
-              )
-            }
-            : c
-        ))
+        for (const char of chunk) {
+          if (controller.signal.aborted) break
+          assistantContent += char
+          setChats(prev => prev.map(c =>
+            c.id === chatId
+              ? {
+                ...c,
+                messages: c.messages.map((m, i) =>
+                  i === c.messages.length - 1 ? { ...m, content: assistantContent } : m
+                )
+              }
+              : c
+          ))
+          await new Promise(resolve => setTimeout(resolve, 0.05))
+        }
       }
     } catch (error: any) {
       console.error('Error:', error)
+      if (error?.name === 'AbortError') return
       setChats(prev => prev.map(c =>
         c.id === chatId
           ? {
@@ -310,6 +351,7 @@ export default function Home() {
         </div>
         <ChatInput
           onSendMessage={sendMessage}
+          onStop={stopGeneration}
           isLoading={loading}
         />
       </div>

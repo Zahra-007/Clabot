@@ -6,6 +6,24 @@ import { Sidebar } from './Sidebar'
 import { motion, AnimatePresence } from 'framer-motion'
 import { SquarePen, PanelLeft, Menu } from 'lucide-react'
 import { ClaIcon } from '@/components/ui/ClaIcon'
+
+function UserAvatar({ size }: { size: number }) {
+  return (
+    <div style={{
+      width: size, height: size,
+      borderRadius: '50%',
+      background: '#6A6EF3',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      fontSize: size * 0.4,
+      fontWeight: 600,
+      color: 'white',
+      cursor: 'pointer',
+    }}>
+      N
+    </div>
+  )
+}
+
 interface Chat {
   id: string
   title: string
@@ -137,7 +155,7 @@ export function ChatLayout({
 
           {/* Logo at bottom */}
           <div className="mt-auto">
-            <ClaIcon size={28} />
+            <UserAvatar size={28} />
           </div>
         </div>
       )}

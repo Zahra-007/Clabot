@@ -1,5 +1,6 @@
 'use client'
 
+import { ClaIcon } from '@/components/ui/ClaIcon'
 import React, { useRef, useEffect } from 'react'
 import { MessageBubble } from './MessageBubble'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -76,15 +77,15 @@ export function ChatWindow({ messages, isLoading }: ChatWindowProps) {
     const observer = new ResizeObserver(() => {
       el.scrollTop = el.scrollHeight
     })
-    
+
     const contentWrapper = messagesEndRef.current?.parentElement
     if (contentWrapper) {
       observer.observe(contentWrapper)
     }
-    
+
     // Initial scroll
     el.scrollTop = el.scrollHeight
-    
+
     return () => observer.disconnect()
   }, [messages, isLoading])
 
@@ -98,10 +99,18 @@ export function ChatWindow({ messages, isLoading }: ChatWindowProps) {
 
           /* Welcome */
           <div className="flex flex-col items-center justify-center min-h-[70vh] text-center">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4 }}
+              className="mb-6"
+            >
+              <ClaIcon size={56} />
+            </motion.div>
             <motion.h1
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
+              transition={{ duration: 0.4, delay: 0.05 }}
               className="text-[28px] md:text-[34px] font-bold tracking-tight text-center px-6"
               style={{ color: 'var(--color-text-primary)', fontFamily: 'var(--font-display)' }}
             >
@@ -114,7 +123,7 @@ export function ChatWindow({ messages, isLoading }: ChatWindowProps) {
               className="mt-4 text-[15px] text-center"
               style={{ color: 'var(--color-text-muted)' }}
             >
-              Ask anything, attach a file, or upload an image 👇
+              Ask anything, attach a file, or upload an image
             </motion.p>
           </div>
 
